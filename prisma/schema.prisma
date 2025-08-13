@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  birthDate DateTime @map("birth_date")
+
+  sales Sale[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("clients")
+}
+
+model Sale {
+  id       Int      @id @default(autoincrement())
+  saleDate DateTime @default(now()) @map("sale_date")
+  value    Decimal
+
+  clientId String @map("client_id")
+
+  client Client @relation(fields: [clientId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sales")
+}
