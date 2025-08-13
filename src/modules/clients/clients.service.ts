@@ -32,8 +32,14 @@ export class ClientsService {
     });
   }
 
-  findAll() {
-    return this.prisma.client.findMany({ include: { sales: true } });
+  findAll(name?: string, email?: string) {
+    return this.prisma.client.findMany({
+      where: {
+        ...(name && { name: { contains: name, mode: 'insensitive' } }),
+        ...(email && { email: { contains: email, mode: 'insensitive' } }),
+      },
+      include: { sales: true },
+    });
   }
 
   async findOne(id: string) {

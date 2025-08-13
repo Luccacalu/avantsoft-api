@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
@@ -36,9 +37,9 @@ export class ClientsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Listar todos os clientes' })
-  findAll() {
-    return this.clientsService.findAll();
+  @ApiOperation({ summary: 'Listar todos os clientes com filtros opcionais' })
+  findAll(@Query('name') name?: string, @Query('email') email?: string) {
+    return this.clientsService.findAll(name, email);
   }
 
   @Get(':id')
