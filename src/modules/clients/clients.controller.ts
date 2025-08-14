@@ -22,6 +22,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { FindClientsQueryDto } from './dto/find-clients-query.dto';
 
 @ApiTags('Clients')
 @Controller('clients')
@@ -36,10 +37,46 @@ export class ClientsController {
     return this.clientsService.create(createClientDto);
   }
 
+  @Get('report')
+  @ApiOperation({
+    summary: 'Gera um relatório customizado de clientes',
+    description:
+      'Retorna uma lista de clientes e suas vendas em uma estrutura aninhada, com suporte para filtros e paginação.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Relatório gerado com sucesso.',
+  })
+  getCustomReport(@Query() query: FindClientsQueryDto) {
+    return this.clientsService.getCustomReport(query);
+  }
+
+  @Get('stats/top-total-sales')
+  @ApiOperation({ summary: 'Cliente com o maior volume total de vendas' })
+  getTopClientByTotalSales() {
+    return this.clientsService.getTopClientByTotalSales();
+  }
+
+  @Get('stats/top-average-sale')
+  @ApiOperation({ summary: 'Cliente com a maior média de valor por venda' })
+  getTopClientByAverageSaleValue() {
+    return this.clientsService.getTopClientByAverageSaleValue();
+  }
+
+  @Get('stats/top-purchase-frequency')
+  @ApiOperation({
+    summary: 'Cliente com o maior número de dias únicos com vendas registradas',
+  })
+  getTopClientByPurchaseFrequency() {
+    return this.clientsService.getTopClientByPurchaseFrequency();
+  }
+
   @Get()
-  @ApiOperation({ summary: 'Listar todos os clientes com filtros opcionais' })
-  findAll(@Query('name') name?: string, @Query('email') email?: string) {
-    return this.clientsService.findAll(name, email);
+  @ApiOperation({
+    summary: 'Listar todos os clientes com filtros opcionais e paginação',
+  })
+  async findAll(@Query() query: FindClientsQueryDto) {
+    return this.clientsService.findAll(query);
   }
 
   @Get(':id')

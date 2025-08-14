@@ -9,11 +9,13 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { CreateSaleDto } from './dto/create-sale.dto';
 import { UpdateSaleDto } from './dto/update-sale.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { SalesStatsQueryDto } from './dto/sales-stats-query.dto';
 
 @ApiTags('Sales')
 @Controller('sales')
@@ -32,6 +34,12 @@ export class SalesController {
   @ApiOperation({ summary: 'Listar todas as vendas' })
   findAll() {
     return this.salesService.findAll();
+  }
+
+  @Get('stats')
+  @ApiOperation({ summary: 'Total de vendas por dia com filtros opcionais' })
+  async getSalesStats(@Query() query: SalesStatsQueryDto) {
+    return this.salesService.getSalesPerDay(query);
   }
 
   @Get(':id')
