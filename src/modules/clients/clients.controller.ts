@@ -30,6 +30,8 @@ export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
   @Post()
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Criar um novo cliente' })
   @ApiResponse({ status: 201, description: 'Cliente criado com sucesso.' })
   @ApiResponse({ status: 400, description: 'Dados inválidos.' })
@@ -38,6 +40,8 @@ export class ClientsController {
   }
 
   @Get('report')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Gera um relatório customizado de clientes',
     description:
@@ -52,18 +56,24 @@ export class ClientsController {
   }
 
   @Get('stats/top-total-sales')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Cliente com o maior volume total de vendas' })
   getTopClientByTotalSales() {
     return this.clientsService.getTopClientByTotalSales();
   }
 
   @Get('stats/top-average-sale')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Cliente com a maior média de valor por venda' })
   getTopClientByAverageSaleValue() {
     return this.clientsService.getTopClientByAverageSaleValue();
   }
 
   @Get('stats/top-purchase-frequency')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Cliente com o maior número de dias únicos com vendas registradas',
   })
@@ -72,6 +82,8 @@ export class ClientsController {
   }
 
   @Get()
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Listar todos os clientes com filtros opcionais e paginação',
   })
@@ -90,6 +102,8 @@ export class ClientsController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Atualizar um cliente por ID (UUID)' })
   @ApiResponse({ status: 200, description: 'Cliente atualizado com sucesso.' })
   @ApiResponse({ status: 404, description: 'Cliente não encontrado.' })
@@ -101,6 +115,8 @@ export class ClientsController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Remover um cliente por ID (UUID)' })
   @ApiResponse({ status: 204, description: 'Cliente removido com sucesso.' })
