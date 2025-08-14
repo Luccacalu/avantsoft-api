@@ -14,6 +14,21 @@ export class SalesService {
   constructor(private prisma: PrismaService) {}
 
   async create(createSaleDto: CreateSaleDto) {
+    if (typeof createSaleDto.value !== 'number' || isNaN(createSaleDto.value)) {
+      throw new UnprocessableEntityException(
+        'O valor da venda deve ser um número.',
+      );
+    }
+    if (createSaleDto.value <= 0) {
+      throw new UnprocessableEntityException(
+        'O valor da venda deve ser positivo.',
+      );
+    }
+    if (!/^\d+(\.\d{1,2})?$/.test(String(createSaleDto.value))) {
+      throw new UnprocessableEntityException(
+        'O valor da venda deve ter no máximo 2 casas decimais.',
+      );
+    }
     const clientExists = await this.prisma.client.findUnique({
       where: { id: createSaleDto.clientId },
     });
@@ -61,6 +76,26 @@ export class SalesService {
   }
 
   async update(id: number, updateSaleDto: UpdateSaleDto) {
+    if (updateSaleDto.value !== undefined) {
+      if (
+        typeof updateSaleDto.value !== 'number' ||
+        isNaN(updateSaleDto.value)
+      ) {
+        throw new UnprocessableEntityException(
+          'O valor da venda deve ser um número.',
+        );
+      }
+      if (updateSaleDto.value <= 0) {
+        throw new UnprocessableEntityException(
+          'O valor da venda deve ser positivo.',
+        );
+      }
+      if (!/^\d+(\.\d{1,2})?$/.test(String(updateSaleDto.value))) {
+        throw new UnprocessableEntityException(
+          'O valor da venda deve ter no máximo 2 casas decimais.',
+        );
+      }
+    }
     await this.findOne(id);
 
     if (updateSaleDto.clientId) {

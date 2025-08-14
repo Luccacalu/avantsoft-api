@@ -14,6 +14,16 @@ export class ClientsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createClientDto: CreateClientDto) {
+    if (!createClientDto.email) {
+      throw new ConflictException('O campo "email" é obrigatório.');
+    }
+    if (!createClientDto.name) {
+      throw new ConflictException('O campo "nome" é obrigatório.');
+    }
+    if (!createClientDto.birthDate) {
+      throw new ConflictException('O campo "nascimento" é obrigatório.');
+    }
+
     const existingClient = await this.prisma.client.findUnique({
       where: { email: createClientDto.email },
     });
@@ -35,6 +45,16 @@ export class ClientsService {
 
   async findAll(query: FindClientsQueryDto) {
     const { name, email, page, limit } = query;
+    if (!Number.isInteger(page) || page < 1) {
+      throw new ConflictException(
+        'O parâmetro "page" deve ser um número inteiro positivo.',
+      );
+    }
+    if (!Number.isInteger(limit) || limit < 1) {
+      throw new ConflictException(
+        'O parâmetro "limit" deve ser um número inteiro positivo.',
+      );
+    }
     const skip = (page - 1) * limit;
 
     const where: Prisma.ClientWhereInput = {
@@ -112,6 +132,16 @@ export class ClientsService {
 
   async getCustomReport(query: FindClientsQueryDto) {
     const { name, email, page, limit } = query;
+    if (!Number.isInteger(page) || page < 1) {
+      throw new ConflictException(
+        'O parâmetro "page" deve ser um número inteiro positivo.',
+      );
+    }
+    if (!Number.isInteger(limit) || limit < 1) {
+      throw new ConflictException(
+        'O parâmetro "limit" deve ser um número inteiro positivo.',
+      );
+    }
     const skip = (page - 1) * limit;
 
     const where: Prisma.ClientWhereInput = {
